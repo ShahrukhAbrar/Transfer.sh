@@ -29,7 +29,12 @@ class HistoryPage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No data available.'));
+            return const Center(
+                child: Text(
+              'Nothing to see here..',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+              textAlign: TextAlign.center,
+            ));
           } else {
             final data = snapshot.data!;
             return ListView.builder(
@@ -86,6 +91,15 @@ class HistoryPage extends StatelessWidget {
                       item['link'],
                       style: const TextStyle(color: Colors.white),
                     ),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.copy,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        _copyLinkToClipboard(item['link']);
+                      },
+                    ),
                   ),
                 );
               },
@@ -110,5 +124,9 @@ class HistoryPage extends StatelessWidget {
     } else {
       Get.snackbar("Error", "There was an Error Deleting the File");
     }
+  }
+
+  void _copyLinkToClipboard(String link) {
+    Clipboard.setData(ClipboardData(text: link));
   }
 }

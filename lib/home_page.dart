@@ -53,10 +53,20 @@ class HomeController extends GetxController {
       final headers = {
         'Content-Type': 'application/octet-stream',
       };
-
-      final res = await http.put(url, headers: headers, body: fileBytes);
+      late final res;
+      try {
+        res = await http.put(url, headers: headers, body: fileBytes);
+      } catch (e) {
+        Get.snackbar(
+          "Exception Thrown",
+          e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          colorText: Colors.white,
+          backgroundColor: Colors.red,
+        );
+        isUploading.value = false;
+      }
       final status = res.statusCode;
-
       if (status == 200) {
         updateFileLink(res.body);
         await Clipboard.setData(ClipboardData(text: res.body));
@@ -96,7 +106,13 @@ class HomePage extends StatelessWidget {
         }
       });
     } catch (e) {
-      print('Error clearing cache directory: $e');
+      Get.snackbar(
+        "Error Clearing Cache",
+        "Please clear cache manually.",
+        snackPosition: SnackPosition.BOTTOM,
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
+      );
     }
   }
 
